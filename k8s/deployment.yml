@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: select-picture-by-random
+spec:
+  selector:
+    matchLabels:
+      app: select-picture-by-random
+  template:
+    metadata:
+      labels:
+        app: select-picture-by-random
+    spec:
+      containers:
+      - name: select-picture-by-random
+        imagePullPolicy: IfNotPresent
+        image: latonaio/select-picture-by-random:latest
+        command:
+          - /bin/sh
+          - -c
+          - "while :; do sleep 10; done"
+        env:
+          - name: CONNECTION_MODE
+            value: direct
+          - name: SELECT_NUM
+            value: "3"
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        volumeMounts:
+          - name: data
+            mountPath: /var/lib/aion/Data/
+          - name: scripts
+            mountPath: /var/lib/aion/Runtime/select-picture-by-random
+      volumes:
+        - name: data
+          hostPath:
+            path: /var/lib/aion/Data/
+        - name: scripts
+          hostPath:
+            path: /home/latona/workspace/select-picture-by-random
